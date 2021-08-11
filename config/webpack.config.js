@@ -510,6 +510,9 @@ module.exports = function (webpackEnv) {
                     : isEnvDevelopment,
                   modules: {
                     localIdentName: '[name]__[local]--[hash:base64:5]',
+                    // getLocalIdent: function(context, localIdentName, localName, options) {
+                    //   return localIdentName;
+                    // },
                   },
                 },
                 'sass-loader'
@@ -530,8 +533,6 @@ module.exports = function (webpackEnv) {
                   sourceMap: isEnvProduction
                     ? shouldUseSourceMap
                     : isEnvDevelopment,
-                  //modules: true,
-                  //localIdentName: '[name]__[local]--[hash:base64:5]',
                   modules: {
                     localIdentName: '[name]__[local]--[hash:base64:5]',
                   },
