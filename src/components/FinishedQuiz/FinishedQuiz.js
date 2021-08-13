@@ -1,6 +1,7 @@
 import React from 'react';
 import s from './FinishedQuiz.scss';
 import cl from 'classnames';
+import {Link} from 'react-router-dom';
 
 import Button from '../../components/Ui/Button/Button';
 
@@ -43,16 +44,7 @@ const FinishedQuiz = props => {
             )
           })
         }
-        {/* <li>
-          <strong>1. </strong>
-          How are you
-          <i className={ cl('fa fa-times ', s.error) } />
-        </li>
-        <li>
-          <strong>1. </strong>
-          How are you
-          <i className={ cl('fa fa-check ', s.success) } />
-        </li> */}
+
       </ul>
 
       <p>Правильно {successCount} из {props.quiz.length}</p>
@@ -65,11 +57,13 @@ const FinishedQuiz = props => {
           Повторить
         </Button>
         
-        <Button
-          type='success'
-        >
-          Перейти в список тестов
-        </Button>
+        <Link to={'/'}>
+          <Button
+            type='success'
+          >
+            Перейти в список тестов
+          </Button>
+        </Link>
       </div>
     </div>
   )
