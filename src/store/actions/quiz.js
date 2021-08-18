@@ -14,16 +14,18 @@ export function fetchQuizes() {
     return async dispatch => {
         dispatch(fetchQuizesStart())
         try {
-            const response = await axios.get('/quizes.json');
+            const response = await axios.get(`/quizes/${localStorage.getItem('userId')}.json`);
 
             const quizes = [];
 
-            Object.keys(response.data).forEach((key, index) => {
-                quizes.push({
-                    id: key,
-                    name: `Тест №${index + 1}`
-                })
-            });
+            if (response) {
+                Object.keys(response.data).forEach((key, index) => {
+                    quizes.push({
+                        id: key,
+                        name: `Тест №${index + 1}`
+                    })
+                });
+            }
 
         dispatch(fetchQuizesSuccess(quizes))
         } catch (e) {
@@ -38,7 +40,7 @@ export function fetchQuizById(quizId) {
         dispatch(fetchQuizesStart)
 
         try {
-            const response = await axios.get(`/quizes/${quizId}.json`)
+            const response = await axios.get(`/quizes/${localStorage.getItem('userId')}/${quizId}.json`)
             const quiz = response.data;
 
             dispatch(fetchQuizSuccess(quiz))

@@ -5,7 +5,7 @@ import is from 'is_js';
 import Button from '../../components/Ui/Button/Button';
 import Input from '../../components/Ui/Input/Input';
 import { connect } from 'react-redux';
-import { auth } from '../../store/actions/auth';
+import { auth, authFailReset } from '../../store/actions/auth';
 
 class Auth extends Component {
     state = {
@@ -81,6 +81,8 @@ class Auth extends Component {
     }
 
     onChangeHandler = (e, controlName) => {
+        this.props.isAuthFailed && this.props.authFailReset()
+
         const formControls = { ...this.state.formControls };
         const control = { ...formControls[controlName] };
 
@@ -121,14 +123,6 @@ class Auth extends Component {
         });
     };
 
-    componentDidMount() {
-        console.log([
-            localStorage.getItem('token'),
-            localStorage.getItem('userId'),
-            localStorage.getItem('expirationData')
-        ]);
-    }
-
     render() { 
         return ( 
             <div className={s.Auth}>
@@ -136,6 +130,12 @@ class Auth extends Component {
                     <h1>Авторизация</h1>
 
                     <form onSubmit={this.submitHandler} className={s.AuthForm}>
+
+                        {
+                            this.props.isAuthFailed
+                                ? <p>Такого ползователя не существует!</p>
+                                : null
+                        }
 
                         { this.renderInputs() }
 
@@ -161,10 +161,17 @@ class Auth extends Component {
     }
 }
 
+function mapStateToProps(state) {
+    return {
+        isAuthFailed: state.auth.isAuthFailed
+    }
+}
+
 function mapDispatchToProps(dispatch) {
     return {
-        auth: (email, password, isLogin) => dispatch(auth(email, password, isLogin))
+        auth: (email, password, isLogin) => dispatch(auth(email, password, isLogin)),
+        authFailReset: () => dispatch(authFailReset())
     }
 }
  
-export default connect(null, mapDispatchToProps)(Auth);
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);

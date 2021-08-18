@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AUTH_LOGOUT, AUTH_SUCCESS } from './actionTypes';
+import { AUTH_FAIL, AUTH_FAIL_RESET, AUTH_LOGOUT, AUTH_SUCCESS } from './actionTypes';
 
 export function auth(email, password, isLogin) {
     return async dispatch => {
@@ -16,22 +16,35 @@ export function auth(email, password, isLogin) {
             url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD5Oh2Evs8g6iXK-3JUHjoHT1_rRmZuf4A';
         }
 
-        const response = await axios.post(
+        await axios.post(
             url, 
             authData
-        );
-        const data = response.data;
+        ).then(response => {
+            const data = response.data;
 
-        const expirationData = new Date(new Date().getTime() + data.expiresIn * 1000)
+            const expirationData = new Date(new Date().getTime() + data.expiresIn * 1000)
 
-        console.log(expirationData);
+            localStorage.setItem('token', data.idToken);
+            localStorage.setItem('userId', data.localId);
+            localStorage.setItem('expirationData', expirationData);
 
-        localStorage.setItem('token', data.idToken);
-        localStorage.setItem('userId', data.localId);
-        localStorage.setItem('expirationData', expirationData);
+            dispatch(authSuccess(data.idToken))
+            dispatch(autoLogout(data.expiresIn))
+        }).catch(error => {
+            dispatch(authFailed())
+        })
 
-        dispatch(authSuccess(data.idToken))
-        dispatch(autoLogout(data.expiresIn))
+        // const data = response.data;
+
+        // const expirationData = new Date(new Date().getTime() + data.expiresIn * 1000)
+
+        // localStorage.setItem('token', data.idToken);
+        // localStorage.setItem('userId', data.localId);
+        // localStorage.setItem('expirationData', expirationData);
+
+        // dispatch(authSuccess(data.idToken))
+        // dispatch(autoLogout(data.expiresIn))
+        
     }
 }
 
@@ -74,5 +87,17 @@ export function authSuccess(token) {
     return {
         type: AUTH_SUCCESS,
         token
+    }
+}
+
+export function authFailed() {
+    return {
+        type: AUTH_FAIL
+    }
+}
+
+export function authFailReset() {
+    return {
+        type: AUTH_FAIL_RESET
     }
 }

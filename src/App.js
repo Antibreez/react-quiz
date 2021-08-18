@@ -20,9 +20,7 @@ class App extends Component {
     let routes = (
       <Switch>
         <Route path='/auth' component={Auth}/>
-        <Route path='/quiz/:id' component={Quiz}/>
-        <Route path='/' component={QuizList}/>
-        <Redirect to='/'/> 
+        <Redirect to='/auth'/> 
       </Switch>
     )
 
@@ -37,8 +35,6 @@ class App extends Component {
         </Switch>
       )
     }
-
-    console.log(this.props.isAuthenticated);
   
     return (
       <Layout>

@@ -25,13 +25,10 @@ class Drawer extends Component {
   }
 
   render() {
-    const links = [
-      {to: '/', label: 'Список', exact: true},
-      
-      
-    ]
+    const links = [];
 
     if (this.props.isAuthenticated) {
+      links.push({to: '/', label: 'Список', exact: true})
       links.push({to: '/quiz-creator', label: 'Создать тест', exact: false})
       links.push({to: '/logout', label: 'Выйти', exact: false})
     } else {
