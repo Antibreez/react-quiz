@@ -4,7 +4,8 @@ import is from 'is_js';
 
 import Button from '../../components/Ui/Button/Button';
 import Input from '../../components/Ui/Input/Input';
-import axios from 'axios';
+import { connect } from 'react-redux';
+import { auth } from '../../store/actions/auth';
 
 class Auth extends Component {
     state = {
@@ -37,44 +38,20 @@ class Auth extends Component {
         }
      }
 
-    loginHandler = async () => {
-        const authData = {
-            email: this.state.formControls.email.value,
-            password: this.state.formControls.password.value,
-            returnSecureToken: true
-
-        }
-
-        try {
-            const response = await axios.post(
-                'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD5Oh2Evs8g6iXK-3JUHjoHT1_rRmZuf4A', 
-                authData
-            )
-
-            console.log(response.data);
-        } catch(e) {
-            console.log(e);
-        }
+    loginHandler = () => {
+        this.props.auth(
+            this.state.formControls.email.value,
+            this.state.formControls.password.value,
+            true
+        )
     }
 
-    registerHandler = async () => {
-        const authData = {
-            email: this.state.formControls.email.value,
-            password: this.state.formControls.password.value,
-            returnSecureToken: true
-
-        }
-
-        try {
-            const response = await axios.post(
-                'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyD5Oh2Evs8g6iXK-3JUHjoHT1_rRmZuf4A', 
-                authData
-            )
-
-            console.log(response.data);
-        } catch(e) {
-            console.log(e);
-        }
+    registerHandler = () => {
+        this.props.auth(
+            this.state.formControls.email.value,
+            this.state.formControls.password.value,
+            false
+        )
     }
 
     submitHandler(e) {
@@ -144,6 +121,14 @@ class Auth extends Component {
         });
     };
 
+    componentDidMount() {
+        console.log([
+            localStorage.getItem('token'),
+            localStorage.getItem('userId'),
+            localStorage.getItem('expirationData')
+        ]);
+    }
+
     render() { 
         return ( 
             <div className={s.Auth}>
@@ -175,5 +160,11 @@ class Auth extends Component {
          );
     }
 }
+
+function mapDispatchToProps(dispatch) {
+    return {
+        auth: (email, password, isLogin) => dispatch(auth(email, password, isLogin))
+    }
+}
  
-export default Auth;
+export default connect(null, mapDispatchToProps)(Auth);
